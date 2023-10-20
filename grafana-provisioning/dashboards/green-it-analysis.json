@@ -1,0 +1,356 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "iteration": 1680877620059,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 34,
+      "panels": [],
+      "title": "Evolution",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "PC003803D09A91473"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "Action ${__field.labels.actionName}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 70
+              },
+              {
+                "color": "purple",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PC003803D09A91473"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "eco_index",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\n    |> range(start: $__from/1000, stop: $__to/1000)\n    |> filter(fn: (r) => r._measurement == \"eco_index\" and r.pageName == \"${pagename}\" and r._field == \"ecoindex\")",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "EcoIndex"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Eco Index",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "PC003803D09A91473"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 36,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PC003803D09A91473"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n    |> range(start: $__from/1000, stop: $__to/1000)\r\n    |> filter(fn: (r) => r._measurement == \"eco_index\" and r.scenarioName == \"${scenarioName}\" and r.pageName == \"${pagename}\" and r._field == \"ges\")",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PC003803D09A91473"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n    |> range(start: $__from/1000, stop: $__to/1000)\r\n    |> filter(fn: (r) => r._measurement == \"eco_index\" and r.pageName == \"${pagename}\" and r._field == \"water\")",
+          "refId": "B"
+        }
+      ],
+      "title": "Water & GES",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "airbusworld-val.helicopters.airbus.com",
+          "value": "airbusworld-val.helicopters.airbus.com"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "PC003803D09A91473"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n    bucket: v.defaultBucket,\r\n    tag: \"hostname\",\r\n    start: -1y\r\n)\r\n",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Application",
+        "multi": false,
+        "name": "hostname",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n    bucket: v.defaultBucket,\r\n    tag: \"hostname\",\r\n    start: -1y\r\n)\r\n",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "Affichage news",
+          "value": "Affichage news"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "PC003803D09A91473"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n    bucket: v.defaultBucket,\r\n    tag: \"scenarioName\",\r\n    start: -1y\r\n)\r\n",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Scenario",
+        "multi": false,
+        "name": "scenarioName",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n    bucket: v.defaultBucket,\r\n    tag: \"scenarioName\",\r\n    start: -1y\r\n)\r\n",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Accueil AirbusWorld",
+          "value": "Accueil AirbusWorld"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "PC003803D09A91473"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(\n    bucket: v.defaultBucket,\n    tag: \"pageName\",\n    start: -1y\n)\n",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Nom de la page",
+        "multi": false,
+        "name": "pagename",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(\n    bucket: v.defaultBucket,\n    tag: \"pageName\",\n    start: -1y\n)\n",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "green-it-analysis",
+  "uid": "YoK0Xjb4k",
+  "version": 2,
+  "weekStart": ""
+}

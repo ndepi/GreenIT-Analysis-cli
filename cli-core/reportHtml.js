@@ -52,11 +52,12 @@ async function create_html_report(reportObject, options, grafanaLinkPresent) {
   const fileList = reportObject.reports;
   const globalReport = reportObject.globalReport;
 
-  //initialise progress bar
+  // initialise progress bar
   const progressBar = utils.createProgressBar(options, fileList.length + 2, 'Create HTML report', 'Creating HTML report ...');
 
   // Read all reports
-  const { allReportsVariables, waterTotal, greenhouseGasesEmissionTotal } = readAllReports(fileList);
+  const { allReportsVariables, waterTotal, greenhouseGasesEmissionTotal } =
+    readAllReports(fileList);
 
   // Read global report
   const globalReportVariables = readGlobalReport(
@@ -351,7 +352,6 @@ function readGlobalReport(
       )
       : '',
     tabGlobal: bestPracticesGlobal,
-    cssTablePagesSize: hasWorstRules ? 'col-md-9' : 'col-md-12',
     grafanaPresent
   };
   return globalReportVariables;

@@ -9,12 +9,12 @@ module.exports = (options) => {
   const SITEMAP_URL = options.sitemap_url;
   const OUTPUT_FILE = path.resolve(options.yaml_output_file);
   //parse sitemap
-  sitemap.fetch(SITEMAP_URL).then(function(res) {
+  sitemap.fetch(SITEMAP_URL).then(function (res) {
     try {
       const urls = res.sites.map(site => {
         return { url: site };
       });
-      fs.writeFileSync(OUTPUT_FILE,YAML.stringify(urls))
+      fs.writeFileSync(OUTPUT_FILE, YAML.stringify(urls))
     } catch (error) {
       throw ` yaml_output_file : Path "${OUTPUT_FILE}" cannot be reached.`
     }

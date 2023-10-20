@@ -149,6 +149,14 @@
     table[data-priority="5"] tbody tr:not([data-priority="5"]) {
       display: none;
     }
+
+    #tabPages thead tr {
+      border-bottom-color: currentColor;
+    }
+
+    #tabPages tr td:first-child {
+      text-align: left;
+    }
   </style>
 
   <script>
@@ -214,60 +222,66 @@
       </div>
     </div>
 
-    <p>
-      Pour comprendre le calcul de l'EcoIndex c'est ici : <a
-        href="https://www.ecoindex.fr/comment-ca-marche/">https://www.ecoindex.fr/comment-ca-marche/</a> <br />
-      Seulement 24 règles d'écoconception sur 115 sont vérifiées par l'outil, pour toutes les connaitre c'est ici : <a
-        href="https://github.com/cnumr/best-practices">https://github.com/cnumr/best-practices</a>
-    </p>
-
     <div class="container my-3">
       <div class="row">
-        <div class="col {{ cssTablePagesSize }}">
+        <div class="col col-md-12">
+          <p>
+            Pour comprendre le calcul de l'EcoIndex c'est ici : <a
+              href="https://www.ecoindex.fr/comment-ca-marche/">https://www.ecoindex.fr/comment-ca-marche/</a> <br />
+            Seulement 24 règles d'écoconception sur 115 sont vérifiées par l'outil, pour toutes les connaitre c'est ici
+            : <a href="https://github.com/cnumr/best-practices">https://github.com/cnumr/best-practices</a>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-md-12">
           <table id="tabPages" class="table table-sm">
             <thead class="table-light" style="text-align:center; vertical-align: middle;">
-              <th scope="col">Scénario</th>
-              <th scope="col">
-                <button class="btn-primary bi bi-info rounded-circle"
-                  onclick="alert('La performance environnementale est représentée par un score sur 100 et une note de A à G (plus la note est élévée, mieux c\'est !).\nL\'EcoIndex est celui de la page, actions comprises.');"></button>&nbsp;Ecoindex
-              </th>
-              <th scope="col">
-                <button class="btn-primary bi bi-info rounded-circle"
-                  onclick="alert('[EcoIndex à l\'ouverture de la page] - [EcoIndex après l\'excution des actions], cette part est inclue dans l\'EcoIndex');"></button>&nbsp;Part
-                due<br /> aux actions
-              </th>
-              <th scope="col">
-                Eau (cl)</th>
-              <th scope="col">
-                GES (gCO2e)</th>
-              <th scope="col">
-                <button class="btn-primary bi bi-info rounded-circle"
-                  onclick="alert('Nombre de règles d\'écoconception à corriger par page sur les 24 analysées par l\'outil')"></button>&nbsp;Règles
-                à<br /> corriger
-              </th>
-              <th scope="col">&nbsp;Règles à<br /> corriger</th>
-              {{#grafanaPresent}}<th scope="col"></th>{{/grafanaPresent}}
+              <tr>
+                <th rowspan="2" scope="col">Scénario</th>
+                <th colspan="2"><button class="btn-primary bi bi-info rounded-circle"
+                    onclick="alert('La performance environnementale est représentée par un score sur 100 et une note de A à G (plus la note est élévée, mieux c\'est !).');"></button>&nbsp;Ecoindex
+                </th>
+                <th rowspan="2" scope="col">
+                  Eau (cl)</th>
+                <th rowspan="2" scope="col">
+                  GES (gCO2e)</th>
+                <th rowspan="2" scope="col">
+                  <button class="btn-primary bi bi-info rounded-circle"
+                    onclick="alert('Nombre de règles d\'écoconception à corriger par page sur les 24 analysées par l\'outil')"></button>&nbsp;Règles
+                  à<br /> corriger
+                </th>
+                {{#grafanaPresent}}<th rowspan="2" scope="col"></th>{{/grafanaPresent}}
+              </tr>
+              <tr>
+                <th scope="col">Ouverture de la page</th>
+                <th scope="col">Ouverture de la page + actions</th>
+              </tr>
             </thead>
             <tbody style="text-align:center">
               {{#allReportsVariables}}
-              <tr class="{{ cssRowError }}" style="text-align:left">
-                <td colspan="6">{{{ link }}}</a></td>
+              <tr class="{{ cssRowError }}">
+                <td><a>{{{ link }}}</a></td>
+                <td colspan="5"></td>
                 {{#grafanaPresent}}<td><a href="{{ grafanaLink }}">Tendance scénario</a></td>{{/grafanaPresent}}
               </tr>
               {{#pages}}
               <tr class="pageRow {{ cssRowError }}">
-                <td>{{ name }}</a></td>
+                <td>&nbsp;&nbsp;{{ name }}</a></td>
                 {{^success}}
                 <td colspan="4"> Erreur</td>
                 {{/success}}
                 {{#success}}
-                <td>{{{ lastTask.ecoIndex }}}&nbsp;<span class="grade {{ lastTask.grade }}">{{ lastTask.grade }}</span>
+                <td>&nbsp;{{ initTask.ecoIndex }}&nbsp;<span class="grade {{ initTask.grade }}">{{ initTask.grade
+                    }}</span>
                 </td>
-                <td>&nbsp;{{ deltaEcoIndex }}</td>
+                <td>&nbsp;{{{ lastTask.ecoIndex }}}&nbsp;<span class="grade {{ lastTask.grade }}">{{ lastTask.grade
+                    }}</span>
+                </td>
                 <td>&nbsp;{{ waterConsumption }}</td>
                 <td>&nbsp;{{ greenhouseGasesEmission }}</td>
                 <td>&nbsp;{{ nbBestPracticesToCorrect }}</td>
-                {{#grafanaLinkPresent}}<td><a href="{{grafanaLink}}">Tendance</a></td>{{/grafanaLinkPresent}}
+                {{#grafanaPresent}}<td><a href="{{grafanaLink}}">Tendance</a></td>{{/grafanaPresent}}
                 {{/success}}
               </tr>
               {{/pages}}

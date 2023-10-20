@@ -27,6 +27,11 @@ yargs(hideBin(process.argv))
         description: 'Number of retry when an analysis of a URL fail',
         default: 2
       })
+      .option('mobile', {
+        type: 'string',
+        description: 'Connection type',
+        default: "filaire"
+      })
       .option('max_tab', {
         type: 'number',
         description: 'Number of concurrent analysis',
@@ -44,13 +49,13 @@ yargs(hideBin(process.argv))
       })
       .option('login', {
         type: 'string',
-        alias:'l',
+        alias: 'l',
         description: 'Path to YAML file with login informations'
       })
       .option('device', {
-        alias:'d',
+        alias: 'd',
         description: 'Hardware to simulate',
-        choices:Object.keys(sizes),
+        choices: Object.keys(sizes),
         default: "desktop"
       })
       .option('proxy', {
@@ -61,7 +66,7 @@ yargs(hideBin(process.argv))
       .option('format', {
         alias: 'f',
         type: 'string',
-        description: 'Report format : Possible choices : xlsx (excel), html, influxdb'
+        description: 'Report format : Possible choices : xlsx (excel), html, influxdb, influxdbhtml'
       })
       .option('headers', {
         alias: 'h',
@@ -80,13 +85,8 @@ yargs(hideBin(process.argv))
       .option('influxdb_org', {
         type: 'string'
       })
-      .option('headless', {
-        type: 'boolean',
-        description: 'Option to enable or disable web browser headless mode',
-        default: true
-      })
   }, (argv) => {
-      require("./commands/analyse.js")(argv)
+    require("./commands/analyse.js")(argv)
   })
   .command('parseSitemap <sitemap_url> [yaml_output_file]', 'Parse sitemap to a YAML file', (yargs) => {
     yargs
