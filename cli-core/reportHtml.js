@@ -47,7 +47,7 @@ const bestPracticesKey = [
 ];
 
 //create html report for all the analysed pages and recap on the first sheet
-async function create_html_report(reportObject, options) {
+async function create_html_report(reportObject, options, grafanaLinkPresent) {
   const OUTPUT_FILE = path.resolve(options.report_output_file);
   const fileList = reportObject.reports;
   const globalReport = reportObject.globalReport;
@@ -63,7 +63,8 @@ async function create_html_report(reportObject, options) {
     globalReport.path,
     allReportsVariables,
     waterTotal,
-    greenhouseGasesEmissionTotal
+    greenhouseGasesEmissionTotal,
+    grafanaLinkPresent
   );
 
   // write global report
@@ -82,6 +83,7 @@ async function create_html_report(reportObject, options) {
 function readAllReports(fileList) {
   // init variables
   const allReportsVariables = [];
+  const grafanaLink = `${config.grafana_url}`;
   let waterTotal = 0;
   let greenhouseGasesEmissionTotal = 0;
 
@@ -209,6 +211,7 @@ function readAllReports(fileList) {
         }
         analyzePage.bestPractices = pageBestPractices;
         analyzePage.nbBestPracticesToCorrect = nbBestPracticesToCorrect;
+        analyzePage.grafanaLink = `${grafanaLink}&var-pageName=${analyzePage.name}&var-scenarioName=${pageName}&var-hostName=${hostname}`;
         pages.push(analyzePage);
       });
 
@@ -221,6 +224,7 @@ function readAllReports(fileList) {
         cssRowError: '',
         name: pageName,
         link: `<a href="${pageFilename}">${pageName}</a>`,
+        grafanaLink: `${grafanaLink}&var-pageName=All&var-scenarioName=${pageName}&var-hostName=${hostname}`,
         filename: pageFilename,
         header: `GreenIT-Analysis report > <a class="text-white" href="${report_data.pageInformations.url}">${pageName}</a>`,
         bigEcoIndex: `${report_data.ecoIndex} <span class="grade big-grade ${report_data.grade}">${report_data.grade}</span>`,
@@ -261,13 +265,15 @@ function readAllReports(fileList) {
  * @param {*} allReportsVariables 
  * @param {*} waterTotal 
  * @param {*} greenhouseGasesEmissionTotal 
+ * @param {*} grafanaPresent 
  * @returns 
  */
 function readGlobalReport(
   path,
   allReportsVariables,
   waterTotal,
-  greenhouseGasesEmissionTotal
+  greenhouseGasesEmissionTotal,
+  grafanaPresent
 ) {
   const globalReport_data = JSON.parse(fs.readFileSync(path).toString());
   const hasWorstRules = globalReport_data.worstRules?.length > 0 ? true : false;
@@ -346,6 +352,7 @@ function readGlobalReport(
       : '',
     tabGlobal: bestPracticesGlobal,
     cssTablePagesSize: hasWorstRules ? 'col-md-9' : 'col-md-12',
+    grafanaPresent
   };
   return globalReportVariables;
 }
