@@ -17,7 +17,7 @@ const utils = require('./utils');
 const cssBestPractices = {
   A: 'checkmark-success',
   B: 'close-warning',
-  C: 'close-error'
+  C: 'close-error',
 };
 const bestPracticesKey = [
   { name: 'AddExpiresOrCacheControlHeaders' },
@@ -59,7 +59,8 @@ async function create_html_report(reportObject, options) {
   const { allReportsVariables, waterTotal, greenhouseGasesEmissionTotal } = readAllReports(fileList);
 
   // Read global report
-  const globalReportVariables = readGlobalReport(globalReport.path,
+  const globalReportVariables = readGlobalReport(
+    globalReport.path,
     allReportsVariables,
     waterTotal,
     greenhouseGasesEmissionTotal
@@ -88,6 +89,8 @@ function readAllReports(fileList) {
   fileList.forEach((file) => {
     let reportVariables = {};
     let report_data = JSON.parse(fs.readFileSync(file.path).toString());
+
+    const hostname = report_data.pageInformations.url.split('/')[2]
     const pageName =
       report_data.pageInformations.name || report_data.pageInformations.url;
     const pageFilename = report_data.pageInformations.name
@@ -95,10 +98,88 @@ function readAllReports(fileList) {
       : `${report_data.index}.html`;
 
     if (report_data.success) {
-      const pageBestPractices = extractBestPractices();
+      let pages = [];
+      let nbRequestTotal = 0;
+      let responsesSizeTotal = 0;
+      let responsesSizeUncompressTotal = 0;
+      let domSizeTotal = 0;
+      let id = 0;
+
+      // Loop over each page (i.e scenario)
+																					
+									   
+      report_data.pages.forEach((page) => {
+        const actions = [];
+        const analyzePage = {};
+        let previousNbRequest = 0;
+        let previousResponseSize = 0;
+        let actionNumber = 0;
+
+        analyzePage.name = page.name;
+        analyzePage.url = page.url;
+
+        analyzePage.id = id;
+        id += 1;
+
+        // Loop on each recorded action
+        page.actions.forEach((action) => {
+          const res = {};
+          res.name = action.name;
+          res.analysis = action.analysis;
+
+          if (action.success && res.analysis) {
+            res.ecoIndex = action.ecoIndex;
+            res.grade = action.grade;
+            res.waterConsumption = action.waterConsumption;
+            res.greenhouseGasesEmission = action.greenhouseGasesEmission;
+            // actions number of request is only the delta with previous measure
+            res.nbRequest = action.nbRequest - previousNbRequest;
+            res.domSize = action.domSize;
+            res.responsesSize =
+              (action.responsesSize - previousResponseSize) / 1000;
+            previousNbRequest = action.nbRequest;
+            previousResponseSize = action.responsesSize;
+            analyzePage.waterConsumption = action.waterConsumption;
+            analyzePage.greenhouseGasesEmission =
+              action.greenhouseGasesEmission;
+            analyzePage.domSize = action.domSize;
+            analyzePage.nbRequest = action.nbRequest;
+            analyzePage.ecoIndex = action.ecoIndex;
+            analyzePage.grade = action.grade;
+
+            if (actionNumber === 0) {
+              // Init task is used to get initial measure
+              analyzePage.initTask = res;
+            }
+
+            // In all case, we affect last task to current action
+            analyzePage.lastTask = { ...res };
+            // For last task, we take full count
+            analyzePage.lastTask.nbRequest = previousNbRequest;
+            analyzePage.lastTask.responsesSize = previousResponseSize / 1000;
+            analyzePage.lastTask.responsesSizeUncompress =
+              action.responsesSizeUncompress;
+          }
+
+          analyzePage.deltaEcoIndex = analyzePage.initTask.ecoIndex - analyzePage.lastTask.ecoIndex;
+
+          actionNumber++;
+          actions.push(res);
+        });
+
+        analyzePage.actions = actions;
+        if (analyzePage.lastTask) {
+          // update total page measure
+          nbRequestTotal += analyzePage.lastTask.nbRequest;
+          responsesSizeTotal += analyzePage.lastTask.responsesSize;
+          domSizeTotal += analyzePage.lastTask.domSize;
+          responsesSizeUncompressTotal +=
+            analyzePage.lastTask.responsesSizeUncompress;
+        }
+
+        const pageBestPractices = extractBestPractices();
 
       // Manage best practices
-      let page = [{ name: pageFilename, bestPractices: report_data.bestPractices }];
       let nbBestPracticesToCorrect = 0;
       pageBestPractices.forEach((bp) => {
         if (page.bestPractices) {
@@ -119,15 +200,21 @@ function readAllReports(fileList) {
           bp.note = 'A';
           bp.comment = ''
         }
+        });
 
-        page.bestPractices = pageBestPractices;
+        if (analyzePage.waterConsumption) {
+          waterTotal += analyzePage.waterConsumption;
+        }
+        if (analyzePage.greenhouseGasesEmission) {
+          greenhouseGasesEmissionTotal += analyzePage.greenhouseGasesEmission;
+        }
+        analyzePage.bestPractices = pageBestPractices;
+        analyzePage.nbBestPracticesToCorrect = nbBestPracticesToCorrect;
+        pages.push(analyzePage);
       });
-      let pages = [page];
-      //			let pages = report_data.pages;
 
+      // Manage state of global best practices, for each page of the scenario
       const bestPractices = _manageScenarioBestPratices(pages);
-      waterTotal += report_data.waterConsumption;
-      greenhouseGasesEmissionTotal += report_data.greenhouseGasesEmission;
 
       reportVariables = {
         date: report_data.date,
@@ -140,13 +227,12 @@ function readAllReports(fileList) {
         bigEcoIndex: `${report_data.ecoIndex} <span class="grade big-grade ${report_data.grade}">${report_data.grade}</span>`,
         smallEcoIndex: `${report_data.ecoIndex} <span class="grade ${report_data.grade}">${report_data.grade}</span>`,
         grade: report_data.grade,
-        waterConsumption: report_data.waterConsumption,
-        greenhouseGasesEmission: report_data.greenhouseGasesEmission,
-        nbRequest: report_data.nbRequest,
+        nbRequest: nbRequestTotal,
         responsesSize: Math.round(responsesSizeTotal * 1000) / 1000,
-        pageSize: `${Math.round(report_data.responsesSize / 1000)} (${Math.round(
-          report_data.responsesSizeUncompress / 1000)})`,
-        domSize: report_data.domSize,
+        pageSize: `${Math.round(responsesSizeTotal)} (${Math.round(
+          responsesSizeUncompressTotal / 1000,
+        )})`,
+        domSize: domSizeTotal,
         nbBestPracticesToCorrect: report_data.nbBestPracticesToCorrect,
         pages,
         bestPractices
@@ -159,6 +245,7 @@ function readAllReports(fileList) {
         success: false,
         header: `GreenIT-Analysis report > <a class="text-white" href="${report_data.pageInformations.url}">${pageName}</a>`,
         cssRowError: 'bg-danger',
+        nbRequest: 0,
         pages: [],
         link: `<a href="${pageFilename}">${pageName}</a>`,
         bestPractices: []
@@ -265,17 +352,25 @@ function readGlobalReport(
   return globalReportVariables;
 }
 
-function extractBestPractices(bestPracticesFromReport) {
+/**
+ * Extract best practices from conf
+ * @returns
+ */
+function extractBestPractices() {
   let bestPractices = [];
+
+  let index = 0;
 
   bestPracticesKey.forEach((key) => {
     const bestPractice = {
       key: key.name,
-      name: translator.translateRule(key),
+      id: `collapse${index}`,
+      name: translator.translateRule(key.name),
       notes: [],
       pages: [],
       comments: [],
     };
+    index++;
     bestPractices.push(bestPractice);
   })
 
@@ -358,7 +453,7 @@ function removeForbiddenCharactersInFile(str) {
 }
 
 function removeAccents(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
 module.exports = {

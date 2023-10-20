@@ -6,11 +6,35 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+      integrity="sha384-GHL5aQs2BwQUg6AUEbqq6XFSN6lGo8DAT58V5NckuLm9Ibf0uR8i7T+GwodBqcET"
+      crossorigin="anonymous"
+    />
 
   <style type="text/css">
+      .pageRow {
+        background-color: #f0f0f0;
+      }
+      .collapseRow {
+        background-color: #d8ffbf;
+      }
+      .hiddenRow {
+        padding: 0 !important;
+      }
     .grade {
       display: inline-block;
       width: 24px;
@@ -114,79 +138,176 @@
   <title>GreenIT-Analysis report</title>
 </head>
 
-<body>
-  <nav class="navbar navbar-success bg-success text-white mb-4">
-    <div class="container-fluid">
-      <span class="navbar-brand mb-0 h1" style="font-size: 1rem;" thjs:utext="${header}">GreenIT-Analysis report >
-        <a class="text-white" href="http://foo/bar">Foo - Bar</a></span>
-      <div class="d-flex flex-row-reverse">
-        <div id="date" thjs:text="${date}">05/05/2021 10:03:12</div>
+  <body>
+    <nav class="navbar navbar-success bg-success text-white mb-4">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1" style="font-size: 1rem"
+          >{{{ header }}}</span
+        >
+        <div class="d-flex flex-row-reverse">
+          <div id="date">{{ date }}</div>
+        </div>
       </div>
-    </div>
   </nav>
-  <div class="container">
-    <div class="container my-5">
-      <div class="row text-center">
-        <div class="col col-md-4">
-          <div class="card mb-4 border-success" style="max-width: 18rem;">
-            <div class="card-header bg-success text-white">Ecoindex</div>
-            <div class="card-body text-dark">
-              <h1 id="ecoIndex" class="card-title" style="height: 45px;" thjs:utext="${bigEcoIndex}">51
-                <span class="grade big-grade C">C</span>
-              </h1>
+    </nav>
+    <div class="container">
+      <div class="container my-5">
+        <div class="row text-center">
+          <div class="col col-md-4">
+            <div class="card mb-4 border-success" style="max-width: 18rem">
+              <div class="card-header bg-success text-white">Requêtes</div>
+              <div class="card-body text-dark">
+                <h1 id="nbRequest" class="card-title">{{ nbRequest }}</h1>
+														
+              </div>
             </div>
           </div>
-        </div>
+			  
 
-        <div class="col col-md-4">
-          <div class="card mb-4 border-success" style="max-width: 18rem;">
-            <div class="card-header bg-success text-white">Eau (cl)</div>
-            <div class="card-body text-dark">
-              <h1 id="waterConsumption" class="card-title" thjs:text="${waterConsumption}">3.24</h1>
+          <div class="col col-md-4">
+            <div class="card mb-4 border-success" style="max-width: 18rem">
+              <div class="card-header bg-success text-white">
+                Taille de la page (Ko)
+              </div>
+              <div class="card-body text-dark">
+                <h1 id="pageSize" class="card-title">{{ pageSize }}</h1>
+              </div>
             </div>
           </div>
-        </div>
+			  
 
-        <div class="col col-md-4">
-          <div class="card mb-4 border-success" style="max-width: 18rem;">
-            <div class="card-header bg-success text-white">GES (gCO2e)</div>
-            <div class="card-body text-dark">
-              <h1 id="greenhouseGasesEmission" class="card-title" thjs:text="${greenhouseGasesEmission}">
-                2.16</h1>
+          <div class="col col-md-4">
+            <div class="card mb-4 border-success" style="max-width: 18rem">
+              <div class="card-header bg-success text-white">Taille du DOM</div>
+              <div class="card-body text-dark">
+                <h1 id="domSize" class="card-title">{{ domSize }}</h1>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="row text-center">
-        <div class="col col-md-4">
-          <div class="card mb-4 border-success" style="max-width: 18rem;">
-            <div class="card-header bg-success text-white">Requêtes</div>
-            <div class="card-body text-dark">
-              <h1 id="nbRequest" class="card-title" thjs:text="${nbRequest}">18</h1>
-            </div>
-          </div>
-        </div>
 
-        <div class="col col-md-4">
-          <div class="card mb-4 border-success" style="max-width: 18rem;">
-            <div class="card-header bg-success text-white">Taille de la page (Ko)</div>
-            <div class="card-body text-dark">
-              <h1 id="pageSize" class="card-title" thjs:text="${pageSize}">3791 (3787)</h1>
-            </div>
-          </div>
-        </div>
-
-        <div class="col col-md-4">
-          <div class="card mb-4 border-success" style="max-width: 18rem;">
-            <div class="card-header bg-success text-white">Taille du DOM</div>
-            <div class="card-body text-dark">
-              <h1 id="domSize" class="card-title" thjs:text="${domSize}">951</h1>
-            </div>
+      <div class="container my-3">
+        <h5 class="mb-3">Etapes</h5>
+        <div class="row">
+          <div class="col col-md-12">
+            <table id="tabBestPractices" class="table table-sm">
+              <thead class="table-light">
+                <th scope="col">Etape</th>
+                <th scope="col">Ecoindex</th>
+                <th scope="col">Eau (cl)</th>
+                <th scope="col">GES (gCO2e)</th>
+                <th scope="col">Nb d'éléments du DOM</th>
+                <th scope="col">Nombre de requêtes</th>
+                <th scope="col">Page (Ko)</th>
+              </thead>
+              <tbody>
+                {{#pages}}
+                <!-- Empty line -->
+                <tr class="pageRow">
+                  <td colspan="7"><b>{{ name }} - {{ url }}</b></td>
+                </tr>
+                <tr>
+                  <td>Chargement de la page</td>
+                  <td>
+                    {{ initTask.ecoIndex }}
+                    <span class="grade {{initTask.grade}}"
+                      >{{initTask.grade}}</span
+                    >
+                  </td>
+                  <td>{{ initTask.waterConsumption }}</td>
+                  <td>{{ initTask.greenhouseGasesEmission }}</td>
+                  <td>{{ initTask.domSize }}</td>
+                  <td>{{{ initTask.nbRequest }}}</td>
+                  <td>{{ initTask.responsesSize }}</td>
+                </tr>
+                {{#actions}}
+                <tr>
+                  <td>{{ name }}</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>
+                    {{#analysis}}{{ domSize }}{{/analysis}}
+                    {{^analysis}}N/A{{/analysis}}
+                  </td>
+                  <td>
+                    {{#analysis}}{{{ nbRequest }}}{{/analysis}}
+                    {{^analysis}}N/A{{/analysis}}
+                  </td>
+                  <td>
+                    {{#analysis}}{{ responsesSize }}{{/analysis}}
+                    {{^analysis}}N/A{{/analysis}}
+                  </td>
+                </tr>
+                {{/actions}}
+                <tr>
+                  <td>Total avec actions</td>
+                  <td>
+                    {{ lastTask.ecoIndex }}
+                    <span class="grade {{lastTask.grade}}"
+                      >{{lastTask.grade}}</span
+                    >
+                  </td>
+                  <td>{{ lastTask.waterConsumption }}</td>
+                  <td>{{ lastTask.greenhouseGasesEmission }}</td>
+                  <td>{{ lastTask.domSize }}</td>
+                  <td>{{{ lastTask.nbRequest }}}</td>
+                  <td>{{ lastTask.responsesSize }}</td>
+                </tr>
+                <tr class="collapseRow">
+                  <td colspan="7">
+                    <a
+                      data-bs-toggle="collapse"
+                      href="#rule_{{ id }}"
+                      role="button"
+                      aria-expanded="false"
+                      aria-controls="rule_{{ id }}"
+                      >Bonnes pratiques ({{ nbBestPracticesToCorrect }} à
+                      corriger)</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="7" class="hiddenRow">
+                    <table id="rule_{{ id }}" class="collapse table table-sm">
+                      <thead class="table-light">
+                        <th scope="col">Règle</th>
+                        <th scope="col">Résultat</th>
+                        <th scope="col">Note</th>
+                      </thead>
+                      <tbody>
+                        {{#bestPractices}}
+                        <tr>
+                          <td title="{{ info }}">
+                              {{ name }}
+                          </td>
+                          <td>{{comment}}</td>
+                          <td class="text-center">
+                            <div class="{{ note }}"></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="3" class="hiddenRow">
+                            <div class="collapse" id="{{ id }}">
+                              <div class="card card-body">{{{ errors}}}</div>
+                            </div>
+                          </td>
+                        </tr>
+                        {{/bestPractices}}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="7"></td>
+                </tr>
+                {{/pages}}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </div>
-
     <div class="container my-3">
       <h5 class="mb-3">Bonnes pratiques</h5>
       <div class="row">
@@ -197,16 +318,36 @@
               <th scope="col">Résultat</th>
               <th scope="col">Note</th>
             </thead>
-            <tbody thjs:each="bestPractice: ${bestPractices}">
-              <tr>
-                <td thjs:text=${bestPractice.name}>Ajouter des expires ou cache-control headers (>= 95%)
-                </td>
-                <td thjs:text=${bestPractice.comment}>0% ressources cachées</td>
-                <td class="text-center">
-                  <div thjs:class="${bestPractice.note}"></div>
-                </td>
-              </tr>
-            </tbody>
+              <tbody>
+                {{#bestPractices}}
+                <tr>
+                  <td>
+                    <span>{{ name }}</span><br />
+                    {{#pages}} {{ . }}
+                    <br />
+                    {{/pages}}
+                  </td>
+                  <td>
+                    <br />{{#comments}} {{ . }}
+                    <br />
+                    {{/comments}}
+                  </td>
+                  <td class="text-center">
+                    <br />{{#notes}}
+                    <div class="{{ . }}"></div>
+                    <br />
+                    {{/notes}}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="hiddenRow">
+                    <div class="collapse" id="{{ id }}">
+                      <div class="card card-body">{{{ errors}}}</div>
+                    </div>
+                  </td>
+                </tr>
+                {{/bestPractices}}
+              </tbody>
           </table>
         </div>
       </div>

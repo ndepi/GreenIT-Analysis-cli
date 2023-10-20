@@ -195,44 +195,63 @@
       : <a href="https://github.com/cnumr/best-practices">https://github.com/cnumr/best-practices</a>
     </p>
 
-    <div class="container my-3">
-      <div class="row">
-        <div class="col" thjs:classappend="${cssTablePagesSize}">
-          <table id="tabPages" class="table table-sm">
-            <thead class="table-light">
-              <th scope="col">Page</th>
-              <th scope="col">Ecoindex</th>
-              <th scope="col">Eau (cl)</th>
-              <th scope="col">GES (gCO2e)</th>
-              <th scope="col">Règles à corriger</th>
-            </thead>
-            <tbody thjs:each="page: ${allReportsVariables}">
-              <tr thjs:class="${page.cssRowError}">
-                <td thjs:utext="${page.link}">Nom d'une URL analysée</a></td>
-                <td colspan="4" thjs:if="${!page.success}"> Erreur</td>
-                <td thjs:if="${page.success}" thjs:utext="${page.smallEcoIndex}">31 <span class="grade A">A</span></td>
-                <td thjs:if="${page.success}" thjs:text="${page.waterConsumption}">2.3</td>
-                <td thjs:if="${page.success}" thjs:text="${page.greenhouseGasesEmission}">232</td>
-                <td thjs:if="${page.success}" thjs:text="${page.nbBestPracticesToCorrect}">4</td>
-              </tr>
+      <div class="container my-3">
+            <div class="row">
+                <div class="col {{ cssTablePagesSize }}">
+                    <table id="tabPages" class="table table-sm">
+                        <thead class="table-light" style="text-align:center; vertical-align: middle;" >
+                            <th scope="col">Scénario</th>
+                            <th scope="col">Ecoindex</th>
+                            <th scope="col">Part due<br /> aux actions</th>
+                              <th scope="col">                    
+                              Eau (cl)</th>
+                            <th scope="col">  
+                              GES (gCO2e)</th>
+                            <th scope="col">Règles à<br /> corriger</th>
+                        </thead>
+                        <tbody style="text-align:center">
+                            {{#allReportsVariables}}
+                              <tr class="{{ cssRowError }}" style="text-align:left">
+                                  <td colspan="6">{{{ link }}}</a></td>
+                              </tr>
+                              {{#pages}}  
+                              <tr class="pageRow {{ cssRowError }}">
+                                  <td>{{ name }}</a></td>
+                                  {{^success}}
+                                  <td colspan="4"> Erreur</td>
+                                  {{/success}}
+                                  {{#success}}
+                                  <td >{{{ lastTask.ecoIndex }}}&nbsp;<span class="grade {{ lastTask.grade }}">{{ lastTask.grade }}</span>
+                                  </td>
+                                  <td>&nbsp;{{ deltaEcoIndex }}</td>
+                                  <td>&nbsp;{{ waterConsumption }}</td>
+                                  <td>&nbsp;{{ greenhouseGasesEmission }}</td>
+                                  <td>&nbsp;{{ nbBestPracticesToCorrect }}</td>
+                                  {{/success}}
+                              </tr>
+                              {{/pages}}
+                            {{/allReportsVariables}}
             </tbody>
           </table>
         </div>
-        <div class="col col-md-3" thjs:if="${worstRulesHeader}">
-          <table id="tabWorstRules" class="table table-bordered">
-            <thead>
-              <tr class="bg-dark text-white">
-                <th scope="col" thjs:text="${worstRulesHeader}">Top 5 des règles à corriger</th>
-              </tr>
-            </thead>
-            <tbody thjs:each="worstRule: ${worstRules}">
-              <tr>
-                <td thjs:text="${worstRule}">#1 Ajouter des expires ou caches-control headers (>= 95%)
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                {{#worstRulesHeader}}
+                <div class="col col-md-3">
+                    <table id="tabWorstRules" class="table table-bordered">
+                        <thead>
+                            <tr class="bg-dark text-white">
+                              <th scope="col">{{ worstRulesHeader }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#worstRules}}
+                            <tr>
+                                <td>{{ . }}</td>
+                            </tr>
+                            {{/worstRules}}
+                        </tbody>
+                    </table>
+                </div>
+                {{/worstRulesHeader}}
       </div>
     </div>
   </div>
