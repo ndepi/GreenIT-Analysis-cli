@@ -245,11 +245,14 @@
                   onclick="alert('Nombre de règles d\'écoconception à corriger par page sur les 24 analysées par l\'outil')"></button>&nbsp;Règles
                 à<br /> corriger
               </th>
+              <th scope="col">&nbsp;Règles à<br /> corriger</th>
+              {{#grafanaPresent}}<th scope="col"></th>{{/grafanaPresent}}
             </thead>
             <tbody style="text-align:center">
               {{#allReportsVariables}}
               <tr class="{{ cssRowError }}" style="text-align:left">
                 <td colspan="6">{{{ link }}}</a></td>
+                {{#grafanaPresent}}<td><a href="{{ grafanaLink }}">Tendance scénario</a></td>{{/grafanaPresent}}
               </tr>
               {{#pages}}
               <tr class="pageRow {{ cssRowError }}">
@@ -264,6 +267,7 @@
                 <td>&nbsp;{{ waterConsumption }}</td>
                 <td>&nbsp;{{ greenhouseGasesEmission }}</td>
                 <td>&nbsp;{{ nbBestPracticesToCorrect }}</td>
+                {{#grafanaLinkPresent}}<td><a href="{{grafanaLink}}">Tendance</a></td>{{/grafanaLinkPresent}}
                 {{/success}}
               </tr>
               {{/pages}}
