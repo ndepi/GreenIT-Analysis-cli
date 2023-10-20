@@ -1,4 +1,3 @@
-const ExcelJS = require('exceljs');
 const fs = require('fs');
 const path = require('path');
 const ProgressBar = require('progress');
@@ -59,6 +58,7 @@ async function create_global_report(reports, options) {
   const progressBar = createProgressBar(options, reports.length + 2, 'Create Global report', 'Creating global report ...');
 
   let eco = 0; //future average
+  let worstEcoIndexes = [null, null];
   let err = [];
   let hostname;
   let worstPages = [];
@@ -73,12 +73,26 @@ async function create_global_report(reports, options) {
     //handle potential failed analyse
     if (obj.success) {
       eco += obj.ecoIndex;
+      const pageWorstEcoIndexes = getWorstEcoIndexes(obj);
+      if (!worstEcoIndexes[0] || worstEcoIndexes[0].ecoIndex > pageWorstEcoIndexes[0].ecoIndex) {
+        // update global worst ecoindex
+        worstEcoIndexes[0] = { ...pageWorstEcoIndexes[0] };
+      }
+      if (!worstEcoIndexes[1] || worstEcoIndexes[1].ecoIndex > pageWorstEcoIndexes[1].ecoIndex) {
+        // update global worst ecoindex
+        worstEcoIndexes[1] = { ...pageWorstEcoIndexes[1] };
+      }
+
       nbBestPracticesToCorrect += obj.nbBestPracticesToCorrect;
       handleWorstPages(obj, worstPages);
-      for (let key in obj.bestPractices) {
-        bestPracticesTotal[key] = bestPracticesTotal[key] || 0
-        bestPracticesTotal[key] += getGradeEcoIndex(obj.bestPractices[key].complianceLevel || "A")
-      }
+      obj.pages.forEach(page => {
+        if (page.bestPractices) {
+          for (let key in page.bestPractices) {
+            bestPracticesTotal[key] = bestPracticesTotal[key] || 0
+            bestPracticesTotal[key] += getGradeEcoIndex(page.bestPractices[key].complianceLevel || "A")
+          }
+        }
+      });
     } else {
       err.push({
         nb: obj.nb,
@@ -113,6 +127,7 @@ async function create_global_report(reports, options) {
     connection: (MOBILE) ? "Mobile" : "Filaire",
     grade: getEcoIndexGrade(eco),
     ecoIndex: eco,
+    worstEcoIndexes: worstEcoIndexes,
     nbPages: reports.length,
     timeout: parseInt(TIMEOUT),
     maxTab: parseInt(MAX_TAB),
