@@ -15,48 +15,48 @@ const utils = require('./utils');
  * Css class best practices
  */
 const cssBestPractices = {
-  A: 'checkmark-success',
-  B: 'close-warning',
-  C: 'close-error',
+    A: 'checkmark-success',
+    B: 'close-warning',
+    C: 'close-error',
 };
 const bestPracticesKey = [
-  { name: 'AddExpiresOrCacheControlHeaders' },
-  { name: 'CompressHttp' },
-  { name: 'DomainsNumber' },
-  { name: 'DontResizeImageInBrowser' },
-  { name: 'EmptySrcTag' },
-  { name: 'ExternalizeCss' },
-  { name: 'ExternalizeJs' },
-  { name: 'HttpError' },
-  { name: 'HttpRequests' },
-  { name: 'ImageDownloadedNotDisplayed' },
-  { name: 'JsValidate' },
-  { name: 'MaxCookiesLength' },
-  { name: 'MinifiedCss' },
-  { name: 'MinifiedJs' },
-  { name: 'NoCookieForStaticRessources' },
-  { name: 'NoRedirect' },
-  { name: 'OptimizeBitmapImages' },
-  { name: 'OptimizeSvg' },
-  { name: 'Plugins' },
-  { name: 'PrintStyleSheet' },
-  { name: 'SocialNetworkButton' },
-  { name: 'StyleSheets' },
-  { name: 'UseETags' },
-  { name: 'UseStandardTypefaces' },
+    { name: 'AddExpiresOrCacheControlHeaders' },
+    { name: 'CompressHttp' },
+    { name: 'DomainsNumber' },
+    { name: 'DontResizeImageInBrowser' },
+    { name: 'EmptySrcTag' },
+    { name: 'ExternalizeCss' },
+    { name: 'ExternalizeJs' },
+    { name: 'HttpError' },
+    { name: 'HttpRequests' },
+    { name: 'ImageDownloadedNotDisplayed' },
+    { name: 'JsValidate' },
+    { name: 'MaxCookiesLength' },
+    { name: 'MinifiedCss' },
+    { name: 'MinifiedJs' },
+    { name: 'NoCookieForStaticRessources' },
+    { name: 'NoRedirect' },
+    { name: 'OptimizeBitmapImages' },
+    { name: 'OptimizeSvg' },
+    { name: 'Plugins' },
+    { name: 'PrintStyleSheet' },
+    { name: 'SocialNetworkButton' },
+    { name: 'StyleSheets' },
+    { name: 'UseETags' },
+    { name: 'UseStandardTypefaces' },
 ];
 
 //create html report for all the analysed pages and recap on the first sheet
 async function create_html_report(reportObject, options) {
-  const OUTPUT_FILE = path.resolve(options.report_output_file);
-  const fileList = reportObject.reports;
-  const globalReport = reportObject.globalReport;
+    const OUTPUT_FILE = path.resolve(options.report_output_file);
+    const fileList = reportObject.reports;
+    const globalReport = reportObject.globalReport;
 
-  //initialise progress bar
-  const progressBar = utils.createProgressBar(options, fileList.length + 2, 'Create HTML report', 'Creating HTML report ...');
+    //initialise progress bar
+    const progressBar = utils.createProgressBar(options, fileList.length + 2, 'Create HTML report', 'Creating HTML report ...');
 
-  // Read all reports
-  const { allReportsVariables, waterTotal, greenhouseGasesEmissionTotal } = readAllReports(fileList);
+    // Read all reports
+    const { allReportsVariables, waterTotal, greenhouseGasesEmissionTotal } = readAllReports(fileList);
 
   // Read global report
   const globalReportVariables = readGlobalReport(
@@ -345,7 +345,7 @@ function readGlobalReport(
       )
       : '',
     tabGlobal: bestPracticesGlobal,
-    cssTablePagesSize: hasWorstRules ? 'col-md-9' : 'col-md-12',
+    cssTablePagesSize: hasWorstRules ? 'col-md-9' : 'col-md-12'
   };
   return globalReportVariables;
 }
@@ -434,7 +434,7 @@ function writeAllReports(allReportsVariables, outputFolder, progressBar) {
   const template = fs
     .readFileSync(path.join(__dirname, 'template/page.html'))
     .toString();
-  allReportsVariables.forEach((reportVariables) => {
+    allReportsVariables.forEach((reportVariables) => {
     var rendered = Mustache.render(template, reportVariables);
     fs.writeFileSync(`${outputFolder}/${reportVariables.filename}`, rendered);
     if (progressBar) {
